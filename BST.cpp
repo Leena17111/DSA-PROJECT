@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+// for numeric_limits and clearing of cin after invalid input
+#include <limits>
 using namespace std;
 
 // =====================
@@ -134,14 +136,26 @@ struct Statistic {
 double getMark(const string& label, double max)
 {
     double value;
+    bool validInput;
     do {
+        validInput = false;
         cout << label;
-        cin >> value;
+        if(cin >> value) {
+            if (value < 0 || value > max)
+                cout << "Invalid input. Enter value between 0 and "
+                     << max << ".\n";
+            else {
+            validInput = true;
+            }
+        }
+        else {
+            cout << "Invalid input. Please enter a numeric value.\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+        
 
-        if (value < 0 || value > max)
-            cout << "Invalid input. Enter value between 0 and "
-                 << max << ".\n";
-    } while (value < 0 || value > max);
+    } while (!validInput);
 
     return value;
 }
