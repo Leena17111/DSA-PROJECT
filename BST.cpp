@@ -487,7 +487,6 @@ int main()
 {
     TreeType bst;
     int choice;
-
     do {
         cout << "\n1. Insert student record"
              << "\n2. Display students (Inorder)"
@@ -502,7 +501,8 @@ int main()
         if (choice == 1) {
             string name;
             cout << "Name: ";
-            cin >> name;
+            cin.ignore();
+            getline(cin, name);
 
             double q = getMark("Quiz (10%): ", 10);
             double a = getMark("Assignment (10%): ", 10);
@@ -522,9 +522,10 @@ int main()
             string name;
             bool found;
             cout << "Search name: ";
-            cin >> name;
+            cin.ignore();
+            getline(cin, name);
             bst.RetrieveItem(name, found);
-            if (!found) cout << "Not found.\n";
+            if (!found) cout << "Student record with the name "<<'"'<<name<<'"'<<" is not found.\n";
         }
 
         else if (choice == 6) {
@@ -532,12 +533,13 @@ int main()
         bool found = false;
 
         cout << "Delete name: ";
-        cin >> name;
+        cin.ignore();
+        getline(cin, name);
 
         bst.RetrieveItem(name, found);
 
         if (!found) {
-            cout << "Record not found. Deletion aborted.\n";
+            cout << "Student record with the name "<<'"'<<name<<'"'<<" is not found. Deletion aborted.\n";
         } else {
             bst.DeleteItem(name);
         }
@@ -545,7 +547,10 @@ int main()
 
         else if (choice == 7)
             bst.ComputeStatistics();
-
+        else {
+            if (choice != 0)
+                cout << "Invalid choice. Try again.\n";
+        }
     } while (choice != 0);
 
     return 0;
