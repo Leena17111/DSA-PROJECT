@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+// for numeric_limits and clearing of cin after invalid input
+#include <limits>
 using namespace std;
 
 // =====================
@@ -134,14 +136,26 @@ struct Statistic {
 double getMark(const string& label, double max)
 {
     double value;
+    bool validInput;
     do {
+        validInput = false;
         cout << label;
-        cin >> value;
+        if(cin >> value) {
+            if (value < 0 || value > max)
+                cout << "Invalid input. Enter value between 0 and "
+                     << max << ".\n";
+            else {
+            validInput = true;
+            }
+        }
+        else {
+            cout << "Invalid input. Please enter a numeric value.\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+        
 
-        if (value < 0 || value > max)
-            cout << "Invalid input. Enter value between 0 and "
-                 << max << ".\n";
-    } while (value < 0 || value > max);
+    } while (!validInput);
 
     return value;
 }
@@ -235,7 +249,7 @@ void TreeType::PrintFullRecord(TreeNode* node) const
 
 
 // =====================
-// Insert / Retrieve / Delete
+// Insert 
 // =====================
 void TreeType::InsertItem(string name,
     double quiz, double assignment, double test1,
@@ -269,15 +283,24 @@ void TreeType::InsertItem(string name,
     cout << "\nCurrent Tree (" << NumberOfNodes() << " students)\n";
 }
 
+// =====================
+// Retrieve 
+// =====================
 void TreeType::RetrieveItem(string item, bool& found) {
     Retrieve(root, item, found);
 }
 
+// =====================
+//  Delete
+// =====================
 void TreeType::DeleteItem(string item) {
     Delete(root, item);
     cout << "\nTree After Deletion (" << NumberOfNodes() << " students)\n";
 }
 
+// =====================
+// Insert 
+// =====================
 void TreeType::Insert(TreeNode*& tree, TreeNode* newNode)
 {
     if (!tree) {
@@ -295,6 +318,10 @@ void TreeType::Insert(TreeNode*& tree, TreeNode* newNode)
         delete newNode;
     }
 }
+
+// =====================
+// Retreive 
+// =====================
 
 void TreeType::Retrieve(TreeNode* tree, string item, bool& found) const
 {
@@ -330,6 +357,10 @@ void TreeType::Retrieve(TreeNode* tree, string item, bool& found) const
     else
         Retrieve(tree->right, item, found);
 }
+
+// =====================
+// Delete 
+// =====================
 
 void TreeType::Delete(TreeNode*& tree, string item)
 {
@@ -367,6 +398,9 @@ void TreeType::DeleteNode(TreeNode*& tree)
     }
 }
 
+// =====================
+// Get predecessor 
+// =====================
 void TreeType::GetPredecessor(TreeNode* tree, TreeNode*& pred)
 {
     while (tree->right)
@@ -385,7 +419,15 @@ void TreeType::PrintTree() const {
     PrintInOrder(root);
 }
 
+// =====================
+//IN ORDER DISPLAY
+// =====================
 void TreeType::PrintInOrder() const { 
+    if (IsEmpty()) {
+        cout << "Tree is empty.\n";
+        return;
+    }
+
     cout << left
          << setw(15) << "Name"
          << setw(8)  << "Quiz"
@@ -410,7 +452,15 @@ void TreeType::PrintInOrder(TreeNode* tree) const {
     PrintInOrder(tree->right);
 }
 
+// =====================
+//PRE ORDER DISPLAY
+// =====================
 void TreeType::PrintPreOrder() const { 
+    if (IsEmpty()) {
+        cout << "Tree is empty.\n";
+        return;
+    }
+
     cout << left
          << setw(15) << "Name"
          << setw(8)  << "Quiz"
@@ -435,7 +485,15 @@ void TreeType::PrintPreOrder(TreeNode* tree) const {
     PrintPreOrder(tree->right);
 }
 
+// =====================
+//POST ORDER DISPLAY
+// =====================
 void TreeType::PrintPostOrder() const { 
+    if (IsEmpty()) {
+        cout << "Tree is empty.\n";
+        return;
+    }
+
     cout << left
          << setw(15) << "Name"
          << setw(8)  << "Quiz"
@@ -452,6 +510,7 @@ void TreeType::PrintPostOrder() const {
     cout << string(90, '-') << endl;
     
     PrintPostOrder(root); }
+
 void TreeType::PrintPostOrder(TreeNode* tree) const {
     if (!tree) return;
     PrintPostOrder(tree->left);
