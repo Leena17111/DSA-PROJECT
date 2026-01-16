@@ -141,7 +141,15 @@ double getMark(const string& label, double max)
         validInput = false;
         cout << label;
         if(cin >> value) {
-            if (value < 0 || value > max)
+            // cin.peek() checks the next character in the input buffer
+            // in some cases the entry will be 4r and next input will be 'r' which results in an unexpected behavior
+            // so the .peek() makes sure that the next character is a newline character, if it is not, then clear the input and enter the value again.
+            if (cin.peek() != '\n') {
+                cout << "Invalid input. Please enter a numeric value.\n";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+            else if (value < 0 || value > max)
                 cout << "Invalid input. Enter value between 0 and "
                      << max << ".\n";
             else {
